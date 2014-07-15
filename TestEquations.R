@@ -30,9 +30,9 @@ F_soilTg_ini<-F_stem_ini[1]
 
 # Psi_soil<-soildata(limitini:limitend,3)./10.*Neg  #MPa        soil matrix potential
 # Psi_soil<-ones(Sz).*0.875                 #MPa        soil matrix potential
-if isempty(Psi_soil)|| ~exist('Psi_soil','var')
+#if isempty(Psi_soil)|| ~exist('Psi_soil','var')
 Psi_soil<-10.^Pfextrap(soildata(limitini:limitend,8),4).*0.00009807.*Neg #derived from pF dataset
-end
+#end
 # Curve 1 <- 23_28 cm depth
 # Curve 2 <- 48_53 cm depth
 # Curve 3 <- 73_78 cm depth

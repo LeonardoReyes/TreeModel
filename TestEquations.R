@@ -22,11 +22,11 @@ RH<-data$Relative.humidity[limitini:limitend] # #         relative humidity
 VPD<-data$VPD[limitini:limitend]              # kPa       Vapour presssure defficit
 VPD[VPD<0]<-0
 range<-max(VPD)-min(VPD)
-NormVPD<-(VPD-min(VPD))./range
-LabelTime<-datestr(data(limitini:limitend,1)+ datenum('30-Dec-1899'))     # Label Times
+NormVPD<-(VPD-min(VPD))/range
+#LabelTime<-datestr(data(limitini:limitend,1)+ datenum('30-Dec-1899'))     # Label Times
 F_stem_ini<-0
-F_soil_ini<-F_stem_ini(1)
-F_soilTg_ini<-F_stem_ini(1)
+F_soil_ini<-F_stem_ini[1]
+F_soilTg_ini<-F_stem_ini[1]
 
 # Psi_soil<-soildata(limitini:limitend,3)./10.*Neg  #MPa        soil matrix potential
 # Psi_soil<-ones(Sz).*0.875                 #MPa        soil matrix potential

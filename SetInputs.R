@@ -63,32 +63,6 @@ Vw_0<-rep(1,Sz)*18  #m3/mol     molar volume of water
 if(!NoPlot==0){
   
 }
-#   figure(1)
-# subplot(2,2,1)
-# plot(ShortWave,'g')
-# legend({'Short wave incomming'})
-# ylabel('Watt m^{-2}')
-# xlabel('hours')
-# xlim([1 500])
-# subplot(2,2,2)
-# plot(T_air,'r')
-# legend({'Air temp (C)'})
-# ylabel('C^o')
-# xlabel('hours')
-# xlim([1 500])
-# subplot(2,2,3)
-# plot(VPD,'c')
-# legend({'VPD'})
-# ylabel('kPa')
-# xlabel('hours')
-# xlim([1 500])
-# subplot(2,2,4)
-# plot(smooth(Psi_soil))
-# ylabel('MPa')
-# xlabel('hours')
-# xlim([1 500])
-# legend({'\psi soil'})
-# latex_fig(12, 31, 3)
 
 ## Initial Resistance Guess
 
@@ -145,9 +119,6 @@ if(Opt==1){
   # Psi_S_stem_p_0<-NormResistance(Pars(5)-10,Pars(5),NormVPD,range)
   # Psi_S_stem_p_0<-Pars(5)
 }
-
-# figure(3)
-# plot([R_X_crownair R_X_stemcrown R_X_rootstem R_X_ShallowRootDeepRoot])
 
 ## Guess from Tyree and Zimmermann
 # Parameters
@@ -219,48 +190,26 @@ W_root_maxTg<-rep(1,Sz)*W_stem_max*p_deeproot     #g         Maximum water conte
 pauset<-0 #niet gebruiken
 update<-50 #om figuur updaten per tijdstap
 
-## Plotting of input files
+## Plotting of input files----
 DateTime<-data$TimeStamp[limitini:limitend]
-
 DbInput<-data.frame(DateTime,ShortWave,T_air,VPD,Psi_soil)
-
 DbInput<-melt(na.omit(DbInput),id="DateTime")
-
 DbInput$DateTime<-strptime(DbInput$DateTime,format="%m/%d/%y %H:%M")
-
 ggplot(DbInput, aes(x=DateTime, y=value,colour=variable)) + 
   geom_line() +
   facet_wrap(~variable, scale="free")+
   scale_x_datetime(breaks = date_breaks("1 day"),
                    minor_breaks = date_breaks("1 hour"))+ 
-  xlab("") + 
-  ylab("Watt m^{-2}")
+  xlab("Date time")
 
-# if NoPlot==1
-# else
-#   figure(1)
-# subplot(2,2,1)
-# plot(ShortWave,'g')
-# legend({'Short wave incomming'})
-# ylabel('Watt m^{-2}')
-# xlabel('hours')
-# xlim([1 500])
-# subplot(2,2,2)
-# plot(T_air,'r')
-# legend({'Air temp (C)'})
-# ylabel('C^o')
-# xlabel('hours')
-# xlim([1 500])
-# subplot(2,2,3)
-# plot(VPD,'c')
-# legend({'VPD'})
-# ylabel('kPa')
-# xlabel('hours')
-# xlim([1 500])
-# subplot(2,2,4)
-# plot(smooth(Psi_soil))
-# ylabel('MPa')
-# xlabel('hours')
-# xlim([1 500])
-# legend({'\psi soil'})
-# latex_fig(12, 3.1, 3)
+## Plotting of inital Xylem Resistances ----
+
+DbRX<-data.frame(DateTime,R_X_crownair,R_X_stemcrown,R_X_rootstem,R_X_ShallowRootDeepRoot)
+DbRX<-melt(na.omit(DbRX),id="DateTime")
+DbRX$DateTime<-strptime(DbRX$DateTime,format="%m/%d/%y %H:%M")
+ggplot(DbRX, aes(x=DateTime, y=value,colour=variable,group=variable)) + 
+  geom_line() +
+  scale_x_datetime(breaks = date_breaks("1 day"),
+                   minor_breaks = date_breaks("1 hour"))+ 
+  xlab("Date time")+
+  ylab(expression(paste(MPa," ",s^-g)))

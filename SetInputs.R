@@ -1,23 +1,38 @@
 # Tree model Maurits Leonardo
-#Parameters ----
+#Loading Packages
+
+if(!require('ggplot2')){
+  install.packages('ggplot2')
+  require('ggplot2')
+} else{require('ggplot2')}
+
+if(!require('reshape2')){
+  install.packages('reshape2')
+  require('reshape2')
+} else{require('reshape2')}
+
+if(!require('scales')){
+  install.packages('scales')
+  require('scales')
+} else{require('scales')}
 
 ## Loading data----
 data<-read.csv('JuneWET.csv',header=T,skip=1)
 sapdata<-read.csv('SAP_QI_MOD.csv',header=T,skip=1)
 soildata<-read.csv('Soil_DATA_QI.csv',header=T,skip=2)
 
-## Input Varaibles----
+## Input Parameters----
 NoPlot<-1
 Neg<-c(-1) #Negativity of water potential from soil
 Opt=0      #if 1 set for optimization runs with SCEM UA
 
 limitini<-1 #range of dataset
 limitend<-200 #range of dataset (max 1260)
-F_stem<-sapdata$SapNNQi[limitini:limitend] #g/s        stem sap flux from data files
-F_stem[F_stem<0001]<-001 #negative values equal to zero (kwam niet voor in periode)
+F_stem<-sapdata$SapNN.Qi[limitini:limitend] #g/s        stem sap flux from data files
+F_stem[F_stem<0.001]<-0.01 #negative values equal to zero (kwam niet voor in periode)
 Sz<-limitend # size data set
 SapFlow<-F_stem # g/hour
-ShortWave<-data$ShortwaveIncommingRadiation[limitini:limitend]       #Watt m^2   Short Wave incomming solar radiation
+ShortWave<-data$Shortwave.Incomming.Radiation[limitini:limitend]       #Watt m^2   Short Wave incomming solar radiation
 ShortWave[ShortWave<0]<-0
 T_air<-data$Air.Temperature[limitini:limitend]#°C         air temperature
 RH<-data$Relative.humidity[limitini:limitend] # #         relative humidity
@@ -204,3 +219,48 @@ W_root_maxTg<-rep(1,Sz)*W_stem_max*p_deeproot     #g         Maximum water conte
 pauset<-0 #niet gebruiken
 update<-50 #om figuur updaten per tijdstap
 
+## Plotting of input files
+DateTime<-data$TimeStamp[limitini:limitend]
+
+DbInput<-data.frame(DateTime,ShortWave,T_air,VPD,Psi_soil)
+
+DbInput<-melt(na.omit(DbInput),id="DateTime")
+
+DbInput$DateTime<-strptime(DbInput$DateTime,format="%m/%d/%y %H:%M")
+
+ggplot(DbInput, aes(x=DateTime, y=value,colour=variable)) + 
+  geom_line() +
+  facet_wrap(~variable, scale="free")+
+  scale_x_datetime(breaks = date_breaks("1 day"),
+                   minor_breaks = date_breaks("1 hour"))+ 
+  xlab("") + 
+  ylab("Watt m^{-2}")
+
+# if NoPlot==1
+# else
+#   figure(1)
+# subplot(2,2,1)
+# plot(ShortWave,'g')
+# legend({'Short wave incomming'})
+# ylabel('Watt m^{-2}')
+# xlabel('hours')
+# xlim([1 500])
+# subplot(2,2,2)
+# plot(T_air,'r')
+# legend({'Air temp (C)'})
+# ylabel('C^o')
+# xlabel('hours')
+# xlim([1 500])
+# subplot(2,2,3)
+# plot(VPD,'c')
+# legend({'VPD'})
+# ylabel('kPa')
+# xlabel('hours')
+# xlim([1 500])
+# subplot(2,2,4)
+# plot(smooth(Psi_soil))
+# ylabel('MPa')
+# xlabel('hours')
+# xlim([1 500])
+# legend({'\psi soil'})
+# latex_fig(12, 3.1, 3)

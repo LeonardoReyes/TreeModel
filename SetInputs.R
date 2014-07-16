@@ -133,20 +133,21 @@ if(Opt==1){
 
 # figure(3)
 # plot([R_X_crownair R_X_stemcrown R_X_rootstem R_X_ShallowRootDeepRoot])
+
 ## Guess from Tyree and Zimmermann
 # Parameters
 # R_X_crownair<-rep(1,Sz)*60*10^-9   #Mpas/g    xylem resistance between crown and air
 # R_X_stemcrown<-rep(1,Sz)*60*10^-9*025  #Mpas/g    xylem resistance between stem and crown
 # R_X_rootstem<-rep(1,Sz)*60*10^-9*025   #Mpas/g    xylem resistance between root and stem
 # R_X_soilroot<-rep(1,Sz)*60*10^-9   #Mpas/g    xylem resistance between soil and root
-# R_S_stem<-rep(1,Sz)*01829       #Mpas/g    xylem resistance between stem xylem and storage compartment
-# R_S_roots<-rep(1,Sz)*(00001829)      #Mpas/g    xylem resistance between root xylem and storage compartment
+R_S_stem<-rep(1,Sz)*0.1829       #Mpas/g    xylem resistance between stem xylem and storage compartment
+R_S_roots<-rep(1,Sz)*0.0001829      #Mpas/g    xylem resistance between root xylem and storage compartment
 
 # Cper<-360
 # if Opt<-<-1
 #     Cper<-Pars(5)
 # else
-  #     Cper<-Pars(5)
+#     Cper<-Pars(5)
 #     #Cper<-503 Optimized value for best results on 01 July 2012
 # end
 #1 Steppe
@@ -202,23 +203,4 @@ W_root_maxTg<-rep(1,Sz)*W_stem_max*p_deeproot     #g         Maximum water conte
 
 pauset<-0 #niet gebruiken
 update<-50 #om figuur updaten per tijdstap
-
-# Running Model----
-##Initial Values
-i=1
-F_stem[i]=0
-W_stem<-0
-W_rootTu<-0
-W_rootTg<-0
-
-W_stem[i]=(Psi_X_stem_initial[i]*C_stem[i])+W_stem_max[i]   #g  Water content stored in the stem storage compartment
-
-W_rootTu[i]=((Psi_X_stem_initial[i]-F_stem_ini[i])
-             *R_X_rootstem[i]* C_root[i])+W_root_maxTu[i]  #g Water content stored in the root storage compartment
-
-W_rootTg[i]=((Psi_X_stem_initial[i]
-              -(F_stem_ini[i]-F_soil_ini[i]
-                *R_X_ShallowRootDeepRoot[i]))
-             *C_rootTg[i])+W_root_maxTg[i]  #g Water content stored in the root storage compartment
-
 

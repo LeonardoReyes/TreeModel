@@ -1,9 +1,11 @@
 
 
 source('SetInputs.R')
-# Running Model----
+# Running Model--
 ##Initial Values
 i=1
+
+# STORAGE----
 F_stem[i]=0
 W_stem<-0
 W_rootTu<-0
@@ -21,12 +23,14 @@ W_rootTg[i]=((Psi_X_stem_initial[i]
 
 W_crown=p_crown[i]*W_stem[i]
 
+# Water Potential air and Storage----
 Psi_air=(R[i]*(T_air[i]+273.15)/Vw_0[i])*log(RH[i]/100)  ##ok<*SAGROW> #Mpa    air water potential
 Psi_S_root= (W_rootTu[i] - W_root_maxTu[i])/C_root[i]
 Psi_S_rootTg= (W_rootTg[i] - W_root_maxTg[i])/C_rootTg[i]#Mpa    root storage water potential
 Psi_S_crown=(W_crown[i] - W_crown_max[i])/C_crown[i]         #Mpa    crown storage water potential
 Psi_S_stem=(W_stem[i] - W_stem_max[i])/C_stem[i] 
 
+# STORAGE flow----
 f_stem=0.4
 
 #     f_root[i]=(Psi_X_root[i]-Psi_S_root[i])./R_S_roots[i]      #g/h        flow to root storage compartment
@@ -38,7 +42,7 @@ f_crown=p_crown[i]*f_stem[i]                                     #i chose this f
 #     f_rootTg[i]=(Psi_X_rootTg[i]-Psi_S_root[i])./R_S_roots[i]      #g/h        flow to root storage compartment
 f_rootTg=p_deeproot[i]*f_stem[i]
 
-
+# Water potential Xylem----
 Psi_X_stem=(((R_S_stem[i]-(R_S_roots[i]*p_root[i]))/R_S_stem[i])
                  *(Psi_S_root[i]-((Psi_S_stem[i]*R_S_roots[i]*p_root[i])/R_S_stem[i])-(F_stem_ini[i]*R_X_rootstem[i])))
 
@@ -51,9 +55,25 @@ Psi_X_root=Psi_X_stem[i]-((F_soil_ini[i]-f_root[i])*R_X_rootstem[i])            
 #     Psi_X_root[i]=Psi_X_stem[i]-(F_stem[i]*R_X_rootstem[i])-(F_soil[i]*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
   Psi_X_rootTg=Psi_X_root[i]-((F_soilTg_ini[i]-f_rootTg[i])*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
 
+# Pool's Flow (Sap flow)----
+
+F_soil=(Psi_X_stem[i]-R_X_stemcrown[i]
+           *(F_stem_ini[i]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
+#     F_soil(i+1,:)=F_stem[i]-f_root[i]
+#     F_soilTg(i+1,:)=F_soil(i+1,:)-f_rootTg[i]
+
+#     F_crown[i]=(-(Psi_X_crown[i]-Psi_X_stem[i])./R_X_stemcrown[i])+f_crown[i]     ##ok<AGROW> #g/h     no need for minus sign   flow from stem to crown
+  #     F_stem(i+1,:)=(-(Psi_X_stem[i]-Psi_X_root[i])./R_X_rootstem[i])+f_stem[i] #g/h        flow from root to stem # no need for the minus sign
+#     F_soil[i]=(F_stem[i]-f_root[i])
+#     F_soilTg(i+1,:)=F_stem(i+1,:)-F_soil(i+1,:)+f_rootTg[i]
+#     F_soil[i]=(-(Psi_X_root[i]-Psi_X_rootTg[i])./R_X_ShallowRootDeepRoot[i])+f_root[i]
+F_soilTg=F_stem_ini[i]-F_soil[i]-f_rootTg[i]
+
+
 
 # Run Loops ----
-for(i=2:200){
+for(i in 2:200){
+  
   W_stem[i]=(Psi_X_stem[i-1]* C_stem[i])+ W_stem_max[i]  
   #g  Water content stored in the stem storage compartment
   

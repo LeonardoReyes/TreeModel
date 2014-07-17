@@ -140,22 +140,22 @@ for(i in 2:200){
   
   # Water potential Xylem---
   Psi_X_stem[i]=(((R_S_stem[i]-(R_S_roots[i]*p_root[i]))/R_S_stem[i])
-              *(Psi_S_root[i]-((Psi_S_stem[i]*R_S_roots[i]*p_root[i])/R_S_stem[i])-(F_stem_ini[i]*R_X_rootstem[i])))
+              *(Psi_S_root[i]-((Psi_S_stem[i]*R_S_roots[i]*p_root[i])/R_S_stem[i])-(F_stem[i-1]*R_X_rootstem[i])))
   
   #     Psi_X_crown[i]=Psi_X_stem[i]-((F_stem[i]-f_stem[i]).*R_X_stemcrown[i])  #Mpa        crown xylem water potential sign error
-  Psi_X_crown[i]=Psi_X_stem[i]-((F_stem_ini[i]-f_stem[i])*R_X_stemcrown[i])  ##ok<AGROW> #Mpa        crown xylem water potential sign error
+  Psi_X_crown[i]=Psi_X_stem[i]-((F_stem[i-1]-f_stem[i])*R_X_stemcrown[i])  ##ok<AGROW> #Mpa        crown xylem water potential sign error
   #     Psi_X_crown[i]=Psi_X_stem[i]-((F_stem[i]-f_stem[i]).*R_X_stemcrown[i])	#Mpa        crown xylem water potential sign error
   # Original
-  Psi_X_root[i]=Psi_X_stem[i]-((F_soil_ini[i]-f_root[i])*R_X_rootstem[i])              ##ok<AGROW> #Mpa        root xylem water potential
+  Psi_X_root[i]=Psi_X_stem[i]-((F_soil[i-1]-f_root[i])*R_X_rootstem[i])              ##ok<AGROW> #Mpa        root xylem water potential
   
   #     Psi_X_root[i]=Psi_X_stem[i]-(F_stem[i]*R_X_rootstem[i])-(F_soil[i]*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
-  Psi_X_rootTg[i]=Psi_X_root[i]-((F_soilTg_ini[i]-f_rootTg[i])*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
+  Psi_X_rootTg[i]=Psi_X_root[i]-((F_soilTg[i-1]-f_rootTg[i])*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
   
   
   # Xylem Flow (i.e.Sap flow) and transpiration---
   
   F_soil[i]=(Psi_X_stem[i]-R_X_stemcrown[i]
-          *(F_stem_ini[i]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
+          *(F_stem[i-1]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
   #     F_soil(i+1,:)=F_stem[i]-f_root[i]
   #     F_soilTg(i+1,:)=F_soil(i+1,:)-f_rootTg[i]
   
@@ -164,7 +164,7 @@ for(i in 2:200){
   #     F_soil[i]=(F_stem[i]-f_root[i])
   #     F_soilTg(i+1,:)=F_stem(i+1,:)-F_soil(i+1,:)+f_rootTg[i]
   #     F_soil[i]=(-(Psi_X_root[i]-Psi_X_rootTg[i])./R_X_ShallowRootDeepRoot[i])+f_root[i]
-  F_soilTg[i]=F_stem_ini[i]-F_soil[i]-f_rootTg[i]
+  F_soilTg[i]=F_stem[i-1]-F_soil[i]-f_rootTg[i]
   
   
   E[i]=((Psi_air[i]-Psi_X_crown[i])/R_X_crownair[i])*-1 #g/h        crown transpiration
@@ -172,3 +172,23 @@ for(i in 2:200){
   F_stem[i]=(F_crown[i]-f_stem[i]) #g/h        flow from root to stem # no need for the minus sign
   
 }
+##Plotting Results----
+
+Output<-data.frame(DateTime=DateTime[1:length(Psi_S_stem_p)],
+                   E=E[1:length(Psi_S_stem_p)],F_crown=F_crown[1:length(Psi_S_stem_p)],F_stem=F_stem[1:length(Psi_S_stem_p)],F_soil=F_soil[1:length(Psi_S_stem_p)],
+                   f_crown=f_crown[1:length(Psi_S_stem_p)],f_stem=f_stem[1:length(Psi_S_stem_p)],f_root=f_root[1:length(Psi_S_stem_p)],f_rootTg=f_rootTg[1:length(Psi_S_stem_p)],
+                   Psi_air=Psi_air[1:length(Psi_S_stem_p)],Psi_X_crown=Psi_X_crown[1:length(Psi_S_stem_p)],Psi_X_stem=Psi_X_stem[1:length(Psi_S_stem_p)],Psi_X_root=Psi_X_root[1:length(Psi_S_stem_p)],Psi_X_rootTg=Psi_X_rootTg[1:length(Psi_S_stem_p)],
+                   Psi_S_crown=Psi_S_crown[1:length(Psi_S_stem_p)],Psi_S_stem=Psi_S_stem[1:length(Psi_S_stem_p)],Psi_S_root=Psi_S_root[1:length(Psi_S_stem_p)],Psi_S_rootTg=Psi_S_rootTg[1:length(Psi_S_stem_p)],
+                   R_X_crownair=R_X_crownair[1:length(Psi_S_stem_p)],R_X_stemcrown=R_X_stemcrown[1:length(Psi_S_stem_p)],R_X_rootstem=R_X_rootstem[1:length(Psi_S_stem_p)],R_X_soilrootTu=R_X_soilrootTu[1:length(Psi_S_stem_p)],R_X_ShallowRootDeepRoot=R_X_ShallowRootDeepRoot[1:length(Psi_S_stem_p)],
+                   R_S_stem=R_S_stem[1:length(Psi_S_stem_p)],R_S_roots=R_S_roots[1:length(Psi_S_stem_p)],R_S_roots_sat=R_S_roots_sat[1:length(Psi_S_stem_p)],
+                   D_outer=D_outer[1:length(Psi_S_stem_p)],D_inner=D_inner[1:length(Psi_S_stem_p)],V_stem=V_stem[1:length(Psi_S_stem_p)])
+
+Output<-melt(na.omit(Output),id="DateTime")
+Output$DateTime<-strptime(Output$DateTime,format="%m/%d/%y %H:%M")
+
+ggplot(Output, aes(x=DateTime, y=value,colour=variable)) + 
+  geom_line() +
+  facet_wrap(~variable, scale="free")+
+  scale_x_datetime(breaks = date_breaks("1 day"),
+                   minor_breaks = date_breaks("1 hour"))+ 
+  xlab("Date time")

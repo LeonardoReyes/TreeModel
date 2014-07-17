@@ -52,7 +52,7 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = HighGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
       D_outer[t+1]<<-D_outer+Diameter[nrow(Diameter),3]
       S[t+1]<<-S+Diameter[nrow(Diameter),4]
       D_inner[t+1]<<-D_inner+Diameter[nrow(Diameter),5]
@@ -62,7 +62,7 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = LowGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
       D_outer[t+1]<<-D_outer+Diameter[nrow(Diameter),3]
       S[t+1]<<-S+Diameter[nrow(Diameter),4]
       D_inner[t+1]<<-D_inner+Diameter[nrow(Diameter),5]    }
@@ -75,7 +75,7 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = HighGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p[t]+Diameter[nrow(Diameter),2]
       D_outer[t+1]<<-D_outer[t]+Diameter[nrow(Diameter),3]
       S[t+1]<<-S[t]+Diameter[nrow(Diameter),4]
       D_inner[t+1]<<-D_inner[t]+Diameter[nrow(Diameter),5]
@@ -86,7 +86,7 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = LowGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p[t]+Diameter[nrow(Diameter),2]
       D_outer[t+1]<<-D_outer[t]+Diameter[nrow(Diameter),3]
       S[t+1]<<-S[t]+Diameter[nrow(Diameter),4]
       D_inner[t+1]<<-D_inner[t]+Diameter[nrow(Diameter),5]

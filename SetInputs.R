@@ -16,6 +16,12 @@ if(!require('scales')){
   require('scales')
 } else{require('scales')}
 
+if(!require('deSolve')){
+  install.packages('deSolve')
+  require('deSolve')
+} else{require('deSolve')}
+
+
 ## Loading data----
 data<-read.csv('JuneWET.csv',header=T,skip=1)
 sapdata<-read.csv('SAP_QI_MOD.csv',header=T,skip=1)

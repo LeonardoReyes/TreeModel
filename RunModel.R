@@ -1,22 +1,21 @@
 
 
-source('SetInputs.R')
+source("SetInputs.R")
+source("StemDiam.R")
 # Running Model--
 ##Initial Values
 i=1
 
 # STORAGE----
 F_stem[i]=0
-W_stem<-0
-W_rootTu<-0
-W_rootTg<-0
 
-W_stem[i]=(Psi_X_stem_initial[i]*C_stem[i])+W_stem_max[i]   #g  Water content stored in the stem storage compartment
 
-W_rootTu[i]=((Psi_X_stem_initial[i]-F_stem_ini[i])
+W_stem=(Psi_X_stem_initial[i]*C_stem[i])+W_stem_max[i]   #g  Water content stored in the stem storage compartment
+
+W_rootTu=((Psi_X_stem_initial[i]-F_stem_ini[i])
              *R_X_rootstem[i]* C_root[i])+W_root_maxTu[i]  #g Water content stored in the root storage compartment
 
-W_rootTg[i]=((Psi_X_stem_initial[i]
+W_rootTg=((Psi_X_stem_initial[i]
               -(F_stem_ini[i]-F_soil_ini[i]
                 *R_X_ShallowRootDeepRoot[i]))
              *C_rootTg[i])+W_root_maxTg[i]  #g Water content stored in the root storage compartment
@@ -55,7 +54,7 @@ Psi_X_root=Psi_X_stem[i]-((F_soil_ini[i]-f_root[i])*R_X_rootstem[i])            
 #     Psi_X_root[i]=Psi_X_stem[i]-(F_stem[i]*R_X_rootstem[i])-(F_soil[i]*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
   Psi_X_rootTg=Psi_X_root[i]-((F_soilTg_ini[i]-f_rootTg[i])*R_X_ShallowRootDeepRoot[i])              ##ok<AGROW> #Mpa        root xylem water potential
 
-# Pool's Flow (Sap flow)----
+# Xykwm Flow (Sap flow)----
 
 F_soil=(Psi_X_stem[i]-R_X_stemcrown[i]
            *(F_stem_ini[i]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
@@ -69,7 +68,19 @@ F_soil=(Psi_X_stem[i]-R_X_stemcrown[i]
 #     F_soil[i]=(-(Psi_X_root[i]-Psi_X_rootTg[i])./R_X_ShallowRootDeepRoot[i])+f_root[i]
 F_soilTg=F_stem_ini[i]-F_soil[i]-f_rootTg[i]
 
+# Initial water resistance
+f_stem=0.4  # g/h flow to stem storage compartment
+DiameterOutput<-StemDiam(Psi_S_stem_initial[i],f_stem[i],i-1,NoPlot)
 
+R_S_stem<-DiameterOutput$R_S_stem
+D_inner<-DiameterOutput$D_inner_output
+D_outer<-DiameterOutput$D_inner_output
+V_stem<-DiameterOutput$V_stem_output
+
+
+#                  R_S_stem=ones(Sz).*5.4053.*5
+R_S_roots=R_S_stem[i]/2
+R_S_roots_sat=R_S_stem[i]/5
 
 # Run Loops ----
 for(i in 2:200){
@@ -86,9 +97,16 @@ for(i in 2:200){
   #g Water content stored in the deep root storage compartment
   W_crown[i]=p_crown[i]*W_stem[i]
   
-  Psi_air[i]=(R[i]*(T_air[i]+273.15)/Vw_0[i])*log(RH[i]/100)  ##ok<*SAGROW> #Mpa    air water potential
+  Psi_air[i]=(R[i]*(T_air[i]+273.15)/Vw_0[i])*log(RH[i]/100)  
+  ##Mpa    air water potential
+  
   Psi_S_root[i]= (W_rootTu[i] - W_root_maxTu[i])/C_root[i]
-  Psi_S_rootTg[i]= (W_rootTg[i] - W_root_maxTg[i])/C_rootTg[i]#Mpa    root storage water potential
-  Psi_S_crown[i]=(W_crown[i] - W_crown_max[i])/C_crown[i]         #Mpa    crown storage water potential
+  Psi_S_rootTg[i]= (W_rootTg[i] - W_root_maxTg[i])/C_rootTg[i]
+  #Mpa    root storage water potential
+  
+  Psi_S_crown[i]=(W_crown[i] - W_crown_max[i])/C_crown[i]         
+  #Mpa    crown storage water potential
+  
   Psi_S_stem[i]=(W_stem[i] - W_stem_max[i])/C_stem[i] 
+  #Mpa    stem storage water potential
 }

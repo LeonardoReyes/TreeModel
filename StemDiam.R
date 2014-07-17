@@ -1,4 +1,4 @@
-StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
+StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
   source("HighGamma.R")
   source("LowGamma.R")
   
@@ -29,17 +29,17 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
   # end
   
   if(t==0){
-    D_outer_ini=0.24
-    Epsilon=Epsilon_0
-    Psi_S_stem_p_0=-2.9     # Mpa Apple trees well watered Needs to be calibrated
+    D_outer_ini<<-0.24
+    Epsilon<<-Epsilon_0
+    Psi_S_stem_p_0<<-2.9     # Mpa Apple trees well watered Needs to be calibrated
 #     Psi_S_stem_p_0=-30     # Mpa Apple trees well watered Needs to be calibrated
     #Psi_S_stem_p_0=100
     
-    S = a*(1-exp(-b*D_outer_ini))
-    D_inner=D_outer_ini-(2*(S))
-    V_stem = pi * S * D_inner * l                      #m³  volume of the stem storage compartment
-    Psi_S_stem_p=0.6*(Psi_X_stem-Psi_S_stem_p_0)
-    D_outer=D_outer_ini
+    S <<- a*(1-exp(-b*D_outer_ini))
+    D_inner<<-D_outer_ini-(2*(S))
+    V_stem <<- pi * S * D_inner * l                      #m³  volume of the stem storage compartment
+    Psi_S_stem_p<<-0.6*(Psi_X_stem-Psi_S_stem_p_0)
+    D_outer<<-D_outer_ini
     #     Psi_S_stem_o = Psi_S_stem_p - Psi_S_stem ASK MAURITS becaus it is not used!!!!!
   }
 
@@ -48,48 +48,49 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
     timeinterval=seq(from=0,to=t+1,by=0.1)
     if(Psi_S_stem_p > Gamma){
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem)
+      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem,D_outer=D_outer)
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = HighGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p=Psi_S_stem_p+Diameter[nrow(Diameter),2]
-      D_outer=D_outer+Diameter[nrow(Diameter),3]
-      S=S+Diameter[nrow(Diameter),4]
-      D_inner=D_inner+Diameter[nrow(Diameter),5]
+      Psi_S_stem_p<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      D_outer[t+1]<<-D_outer+Diameter[nrow(Diameter),3]
+      S[t+1]<<-S+Diameter[nrow(Diameter),4]
+      D_inner[t+1]<<-D_inner+Diameter[nrow(Diameter),5]
     }else{
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem)
+      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem,D_outer=D_outer)
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = LowGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p=Psi_S_stem_p+Diameter[nrow(Diameter),2]
-      D_outer=D_outer+Diameter[nrow(Diameter),3]
-      S=S+Diameter[nrow(Diameter),4]
-      D_inner=D_inner+Diameter[nrow(Diameter),5]
-    }
+      Psi_S_stem_p<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      D_outer[t+1]<<-D_outer+Diameter[nrow(Diameter),3]
+      S[t+1]<<-S+Diameter[nrow(Diameter),4]
+      D_inner[t+1]<<-D_inner+Diameter[nrow(Diameter),5]    }
   }
   else{
     timeinterval=seq(from=t,to=t+1,by=0.1)
-    if(Psi_S_stem_p > Gamma){
+    if(Psi_S_stem_p[t] > Gamma){
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem)
+      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p[t],S=S[t],V_stem=V_stem[t],D_outer=D_outer[t])
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = HighGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p=Psi_S_stem_p+Diameter[nrow(Diameter),2]
-      D_outer=D_outer+Diameter[nrow(Diameter),3]
-      S=S+Diameter[nrow(Diameter),4]
-      D_inner=D_inner+Diameter[nrow(Diameter),5]
-    }else{
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      D_outer[t+1]<<-D_outer[t]+Diameter[nrow(Diameter),3]
+      S[t+1]<<-S[t]+Diameter[nrow(Diameter),4]
+      D_inner[t+1]<<-D_inner[t]+Diameter[nrow(Diameter),5]
+      
+      }else{
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem)
+      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p[t],S=S[t],V_stem=V_stem[t],D_outer=D_outer[t])
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = LowGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p=Psi_S_stem_p+Diameter[nrow(Diameter),2]
-      D_outer=D_outer+Diameter[nrow(Diameter),3]
-      S=S+Diameter[nrow(Diameter),4]
-      D_inner=D_inner+Diameter[nrow(Diameter),5]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
+      D_outer[t+1]<<-D_outer[t]+Diameter[nrow(Diameter),3]
+      S[t+1]<<-S[t]+Diameter[nrow(Diameter),4]
+      D_inner[t+1]<<-D_inner[t]+Diameter[nrow(Diameter),5]
+      
     }
   }
 
@@ -100,8 +101,8 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
   #     options=odeset('RelTol',1e-6)
   #     [timdiff,Diameter]=ode45(@HighGamma,timeinterval,[0.0000001 0.0000001 0.0000001 0.0000001],options,p)
   #     Diameter=sum(Diameter)
-  #     Psi_S_stem_p=Psi_S_stem_p+Diameter(end,2)
-  #     D_outer=D_outer+Diameter(end,1)
+  #     Psi_S_stem_p<<-Psi_S_stem_p+Diameter(end,2)
+  #     D_outer<-D_outer+Diameter(end,1)
   #     S=S+Diameter(end,3)
   #     D_inner=D_inner+Diameter(end,4)
   #     #     V_stem=Diameter(end,5)
@@ -110,8 +111,8 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
   #     options=odeset('RelTol',1e-6)
   #     [timdiff,Diameter]=ode45(@LowGamma,timeinterval,[0.0000001 0.0000001 0.0000001 0.0000001],options,p)
   #     Diameter=sum(Diameter)
-  #     D_outer=D_outer+Diameter(end,2)
-  #     Psi_S_stem_p=Psi_S_stem_p+Diameter(end,1)
+  #     D_outer<-D_outer+Diameter(end,2)
+  #     Psi_S_stem_p<<-Psi_S_stem_p+Diameter(end,1)
   #     S=S+Diameter(end,3)
   #     D_inner=D_inner+Diameter(end,4)
   #     #    D_inner=Diameter(end,4)
@@ -119,9 +120,15 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
   # end
   
   # Epsilon = Epsilon_0* Psi_S_stem_p * D_outer
+if(t==0){
   A = pi* D_inner * l
-  R_S_stem = 1.0 / ( A * Rho_w * L )
-  V_stem = pi * S * D_inner * l
+  R_S_stem[t+1] <<- 1.0 / ( A * Rho_w * L )
+  V_stem [t+1]<<-pi * S * D_inner * l
+}else{
+  A = pi* D_inner[t] * l
+  R_S_stem[t+1] <<- 1.0 / ( A * Rho_w * L )
+  V_stem [t+1]<<- pi* S[t] * D_inner[t] * l
+}
   
 #   if(isnan(V_stem)|| (D_outer-D_inner)<0|| V_stem<0){
 #     #     keyboard
@@ -143,9 +150,9 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,i,Noplot){
     # hold off
   }
   
-  D_outer_output=D_outer
-  D_inner_output=D_inner
-  V_stem_output=V_stem
-  
-  return(data.frame(R_S_stem,D_outer_output,D_inner_output,V_stem_output))
+#   D_outer_output=D_outer
+#   D_inner_output=D_inner
+#   V_stem_output=V_stem
+#   
+#   return(data.frame(R_S_stem,D_outer_output,D_inner_output,V_stem_output))
 }

@@ -47,7 +47,7 @@ VPD[VPD<0]<-0
 range<-max(VPD,na.rm=T)-min(VPD,na.rm=T)
 NormVPD<-(VPD-min(VPD,na.rm=T))/range
 #LabelTime<-datestr(data(limitini:limitend,1)+ datenum('30-Dec-1899'))     # Label Times
-F_stem_ini<-0
+F_stem_ini<-SapFlow[1]
 F_soil_ini<-F_stem_ini[1]
 F_soilTg_ini<-F_stem_ini[1]
 
@@ -104,7 +104,7 @@ if(Opt==1){
 }else{
 #   R_X_crownair<-(NormVPD*9)-1   #Mpas/g    xylem resistance between crown and air
   
-  Change<-2
+  Change<-1
   R_X_crownair<-(VPD*-1)+10  #Mpas/g    xylem resistance between crown and air
   
   # Previous good value R_X_crownair<-FourierForResistance(limitend,200)'*NormVPD
@@ -136,8 +136,8 @@ if(Opt==1){
 # R_X_stemcrown<-rep(1,Sz)*60*10^-9*025  #Mpas/g    xylem resistance between stem and crown
 # R_X_rootstem<-rep(1,Sz)*60*10^-9*025   #Mpas/g    xylem resistance between root and stem
 # R_X_soilroot<-rep(1,Sz)*60*10^-9   #Mpas/g    xylem resistance between soil and root
-R_S_stem<-rep(1,Sz)*0.1829/Change      #Mpas/g    xylem resistance between stem xylem and storage compartment
-R_S_roots<-rep(1,Sz)*0.0001829/Change      #Mpas/g    xylem resistance between root xylem and storage compartment
+R_S_stem<-rep(1,Sz)*0.1829     #Mpas/g    xylem resistance between stem xylem and storage compartment
+R_S_roots<-rep(1,Sz)*0.0001829      #Mpas/g    xylem resistance between root xylem and storage compartment
 
 # Cper<-360
 # if Opt<-<-1

@@ -7,7 +7,7 @@ source("StemDiam.R")
 i=1
 
 # Pool compartments----
-F_stem[i]=0
+F_stem[i]=F_stem_ini
 
 
 W_stem=(Psi_X_stem_initial[i]*C_stem[i])+W_stem_max[i]   #g  Water content stored in the stem storage compartment
@@ -69,13 +69,14 @@ DiameterOutput<-StemDiam(Psi_S_stem_initial[i],f_stem[i],i-1,NoPlot)
 # D_inner<<-DiameterOutput$D_inner_output
 # D_outer<<-DiameterOutput$D_inner_output
 # V_stem<<-DiameterOutput$V_stem_output
-R_S_roots=R_S_stem[i]/2
-R_S_roots_sat=R_S_stem[i]/5
+R_S_roots=R_S_stem[i]
+R_S_roots_sat=R_S_stem[i]
 
 # Xylem Flow (Sap flow)----
 
-F_soil=(Psi_X_stem[i]-R_X_stemcrown[i]
-        *(F_stem_ini[i]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
+ F_soilTg=(Psi_X_stem[i]-R_X_stemcrown[i]
+         *(F_stem_ini[i]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_deeproot[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
+# F_soil=-((Psi_X_root[i]-Psi_X_stem[i])/R_X_rootstem[i])-f_root[i]
 #     F_soil(i+1,:)=F_stem[i]-f_root[i]
 #     F_soilTg(i+1,:)=F_soil(i+1,:)-f_rootTg[i]
 
@@ -84,15 +85,16 @@ F_soil=(Psi_X_stem[i]-R_X_stemcrown[i]
 #     F_soil[i]=(F_stem[i]-f_root[i])
 #     F_soilTg(i+1,:)=F_stem(i+1,:)-F_soil(i+1,:)+f_rootTg[i]
 #     F_soil[i]=(-(Psi_X_root[i]-Psi_X_rootTg[i])./R_X_ShallowRootDeepRoot[i])+f_root[i]
-F_soilTg=F_stem_ini[i]-F_soil[i]-f_rootTg[i]
 
+#WORKING VERSION 18 Jul 2014
+F_soil=F_stem_ini[i]-F_soilTg[i]-f_root[i]
 E=((Psi_air[i]-Psi_X_crown[i])/R_X_crownair[i])*-1 #g/h        crown transpiration
 F_crown=(E[i]-f_crown[i])     #g/h     no need for minus sign   flow from stem to crown
-F_stem=(F_crown[i]-f_stem[i]) #g/h        flow from root to stem # no need for the minus sign
+F_stem[i]=F_crown[i]-f_stem[i]
 
 # Run Loops ----
 for(i in 2:200){
-  
+  if(i==72){browser()}
   W_stem[i]=(Psi_X_stem[i-1]* C_stem[i])+ W_stem_max[i]  
   #g  Water content stored in the stem storage compartment
   
@@ -126,8 +128,8 @@ for(i in 2:200){
   #   D_inner[i]<<-DiameterOutput$D_inner_output
   #   D_outer[i]<<-DiameterOutput$D_inner_output
   #   V_stem[i]<<-DiameterOutput$V_stem_output
-  R_S_roots[i]=R_S_stem[i]/2
-  R_S_roots_sat[i]=R_S_stem[i]/5
+  R_S_roots[i]=R_S_stem[i]
+  R_S_roots_sat[i]=R_S_stem[i]
   
   #Storage flow
   f_stem[i]=(1/R_S_stem[i])*((((R_S_stem[i]-R_S_roots[i]
@@ -161,22 +163,22 @@ for(i in 2:200){
   
   # Xylem Flow (i.e.Sap flow) and transpiration---
   
-  F_soil[i]=(Psi_X_stem[i]-R_X_stemcrown[i]
-             *(F_stem[i-1]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
-  #     F_soil(i+1,:)=F_stem[i]-f_root[i]
-  #     F_soilTg(i+1,:)=F_soil(i+1,:)-f_rootTg[i]
-  
-  #     F_crown[i]=(-(Psi_X_crown[i]-Psi_X_stem[i])./R_X_stemcrown[i])+f_crown[i]     ##ok<AGROW> #g/h     no need for minus sign   flow from stem to crown
-  #     F_stem(i+1,:)=(-(Psi_X_stem[i]-Psi_X_root[i])./R_X_rootstem[i])+f_stem[i] #g/h        flow from root to stem # no need for the minus sign
-  #     F_soil[i]=(F_stem[i]-f_root[i])
-  #     F_soilTg(i+1,:)=F_stem(i+1,:)-F_soil(i+1,:)+f_rootTg[i]
-  #     F_soil[i]=(-(Psi_X_root[i]-Psi_X_rootTg[i])./R_X_ShallowRootDeepRoot[i])+f_root[i]
-  F_soilTg[i]=F_stem[i-1]-F_soil[i]-f_rootTg[i]
-  
-  
-  E[i]=((Psi_air[i]-Psi_X_crown[i])/R_X_crownair[i])*-1 #g/h        crown transpiration
-  F_crown[i]=(E[i]-f_crown[i])     #g/h     no need for minus sign   flow from stem to crown
-  F_stem[i]=(F_crown[i]-f_stem[i]) #g/h        flow from root to stem # no need for the minus sign
+
+  E[i]=((Psi_air[i]-Psi_X_crown[i])/R_X_crownair[i])*-1 #g/h         transpiration
+  F_crown[i]=E[i]-f_crown[i]    #g/h     no need for minus sign
+  F_stem[i]=F_crown[i]-f_stem[i]
+  F_soilTg[i]=(Psi_X_stem[i]-R_X_stemcrown[i]
+             *(F_stem[i-1]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_deeproot[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
+#   F_soil[i]=-((Psi_X_root[i]-Psi_X_stem[i])/R_X_rootstem[i])-f_root[i]
+  F_soil[i]=F_stem[i]-F_soilTg[i]-f_root[i]
+#   #Previous Working Version
+#   
+#   F_soil[i]=(Psi_X_stem[i]-R_X_stemcrown[i]
+#              *(F_stem[i-1]-f_stem[i])-Psi_air[i])/R_X_crownair[i]+(1+p_crown[i]+p_root[i])*f_stem[i]  #g/h       minus sign wrongly positioned flow from soil to root equation adapted (error in signs)
+#   E[i]=((Psi_air[i]-Psi_X_crown[i])/R_X_crownair[i])*-1 #g/h        crown transpiration
+#   F_crown[i]=(E[i]-f_crown[i])     #g/h     no need for minus sign   flow from stem to crown
+#   F_stem[i]=(F_crown[i]-f_stem[i]) #g/h        flow from root to stem # no need for the minus sign
+#   F_soilTg[i]=F_stem[i]-F_soil[i]
   
 }
 ##Plotting Results----

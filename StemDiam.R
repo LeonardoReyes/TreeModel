@@ -1,7 +1,7 @@
-StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
+StemDiam<-function(Psi_S_stem_initial,F_stem,t,Noplot){
   source("HighGamma.R")
   source("LowGamma.R")
-  
+#   browser()
   #Parameter----
   l=3           #m  length of the stem segment
   L=8.38*10^-8  #m/(Mpa.s)	radial hydraulic conductivity of the virtual membrane separating the stem storage compartment from the xylem compartment
@@ -48,48 +48,48 @@ StemDiam<-function(Psi_S_stem_initial,f_stem,t,Noplot){
     timeinterval=seq(from=0,to=t+1,by=0.1)
     if(Psi_S_stem_p > Gamma){
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem,D_outer=D_outer)
+      parms<-c(Epsilon_0=Epsilon,F_stem=F_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem,D_outer=D_outer)
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = HighGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
-      D_outer[t+1]<<-D_outer+Diameter[nrow(Diameter),3]
-      S[t+1]<<-S+Diameter[nrow(Diameter),4]
-      D_inner[t+1]<<-D_inner+Diameter[nrow(Diameter),5]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+sum(Diameter[,2])
+      D_outer[t+1]<<-D_outer+sum(Diameter[,3])
+      S[t+1]<<-S+sum(Diameter[,4])
+      D_inner[t+1]<<-D_inner+sum(Diameter[,5])
     }else{
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem,D_outer=D_outer)
+      parms<-c(Epsilon_0=Epsilon,F_stem=F_stem,Psi_S_stem_p=Psi_S_stem_p,S=S,V_stem=V_stem,D_outer=D_outer)
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = LowGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+Diameter[nrow(Diameter),2]
-      D_outer[t+1]<<-D_outer+Diameter[nrow(Diameter),3]
-      S[t+1]<<-S+Diameter[nrow(Diameter),4]
-      D_inner[t+1]<<-D_inner+Diameter[nrow(Diameter),5]    }
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p+sum(Diameter[,2])
+      D_outer[t+1]<<-D_outer+sum(Diameter[,3])
+      S[t+1]<<-S+sum(Diameter[,4])
+      D_inner[t+1]<<-D_inner+sum(Diameter[,5])    }
   }
   else{
     timeinterval=seq(from=t,to=t+1,by=0.1)
     if(Psi_S_stem_p[t] > Gamma){
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p[t],S=S[t],V_stem=V_stem[t],D_outer=D_outer[t])
+      parms<-c(Epsilon_0=Epsilon,F_stem=F_stem,Psi_S_stem_p=Psi_S_stem_p[t],S=S[t],V_stem=V_stem[t],D_outer=D_outer[t])
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = HighGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p[t+1]<<-Psi_S_stem_p[t]+Diameter[nrow(Diameter),2]
-      D_outer[t+1]<<-D_outer[t]+Diameter[nrow(Diameter),3]
-      S[t+1]<<-S[t]+Diameter[nrow(Diameter),4]
-      D_inner[t+1]<<-D_inner[t]+Diameter[nrow(Diameter),5]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p[t]+sum(Diameter[,2])
+      D_outer[t+1]<<-D_outer[t]+sum(Diameter[,3])
+      S[t+1]<<-S[t]+sum(Diameter[,4])
+      D_inner[t+1]<<-D_inner[t]+sum(Diameter[,5])
       
       }else{
       yini<-c(y1=0.0000001,y2=0.0000001,y3=0.0000001,y4=0.0000001)
-      parms<-c(Epsilon_0=Epsilon,f_stem=f_stem,Psi_S_stem_p=Psi_S_stem_p[t],S=S[t],V_stem=V_stem[t],D_outer=D_outer[t])
+      parms<-c(Epsilon_0=Epsilon,F_stem=F_stem,Psi_S_stem_p=Psi_S_stem_p[t],S=S[t],V_stem=V_stem[t],D_outer=D_outer[t])
       times<-timeinterval
       Diameter <- rk (times = times, y = yini, func = LowGamma, parms = parms,rtol = 1e-6, atol = 1e-6)
       
-      Psi_S_stem_p[t+1]<<-Psi_S_stem_p[t]+Diameter[nrow(Diameter),2]
-      D_outer[t+1]<<-D_outer[t]+Diameter[nrow(Diameter),3]
-      S[t+1]<<-S[t]+Diameter[nrow(Diameter),4]
-      D_inner[t+1]<<-D_inner[t]+Diameter[nrow(Diameter),5]
+      Psi_S_stem_p[t+1]<<-Psi_S_stem_p[t]+sum(Diameter[,2])
+      D_outer[t+1]<<-D_outer[t]+sum(Diameter[,3])
+      S[t+1]<<-S[t]+sum(Diameter[,4])
+      D_inner[t+1]<<-D_inner[t]+sum(Diameter[,5])
       
     }
   }

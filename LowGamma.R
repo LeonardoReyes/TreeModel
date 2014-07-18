@@ -8,7 +8,7 @@ LowGamma<-function(time,y,parms){
   
   with(as.list(c(y, parms)), {
     #deriv(DPsi_S_stem_p)
-    dy1<-Psi_S_stem_p*f_stem*y[2]/(Rho_w*V_stem)
+    dy1<-Psi_S_stem_p*F_stem*y[2]/(Rho_w*V_stem)
     
     #deriv( D_outer ) 
     dy2<- 2.0 * S * y[1] /

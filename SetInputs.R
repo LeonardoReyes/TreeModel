@@ -174,7 +174,7 @@ C_crown<-rep(1,Sz)*C3/Change2         #g/Mpa      crown capacitance
 C_rootTg<-rep(1,Sz)*C2*0.25/Change2   #g/Mpa      Deep root capacitance Initial guess
 # C_rootTg<-rep(1,Sz)*C2*001          #g/Mpa      Deep root capacitance Initial guess
 
-p_root<-rep(1,Sz)*0.01             #frac     percernage of stem water in roots Initial guess 0.1
+p_root<-rep(1,Sz)*0.007             #frac     percernage of stem water in roots Initial guess 0.1
 p_crown<-rep(1,Sz)*0.04             #frac     percernage of stem water in crown Initial guess 0.4
 p_deeproot<-rep(1,Sz)*0.005        #frac     percernage of stem water in deep roots Initial guess 0.05
 

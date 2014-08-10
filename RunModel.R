@@ -63,11 +63,7 @@ f_rootTg=(Psi_X_rootTg[i]-Psi_S_root[i])/R_S_roots[i]      #g/h        flow to r
 
 # Initial Diameter parameters/Variables----
 f_stem=0.4  # g/h flow to stem storage compartment
-<<<<<<< HEAD
 DiameterOutput<-StemDiam(Psi_S_stem_initial[i],0,i-1,NoPlot)
-=======
-DiameterOutput<-StemDiam(Psi_S_stem_initial[i],F_stem[i],i-1,NoPlot)
->>>>>>> b8bd689844bd8aae01df693c5a62b8def7fb42ac
 
 # R_S_stem<-DiameterOutput$R_S_stem
 # D_inner<<-DiameterOutput$D_inner_output
@@ -126,11 +122,7 @@ for(i in 2:200){
   #Mpa    stem storage water potential
   
   #Diameter variation Calculation
-<<<<<<< HEAD
   DiameterOutput<-StemDiam(Psi_S_stem[i],W_stem[i],i-1,NoPlot)
-=======
-  DiameterOutput<-StemDiam(Psi_S_stem[i],F_stem[i-1]-F_stem[i],i-1,NoPlot)
->>>>>>> b8bd689844bd8aae01df693c5a62b8def7fb42ac
   
   #   R_S_stem[i]<-DiameterOutput$R_S_stem
   #   D_inner[i]<<-DiameterOutput$D_inner_output
@@ -190,21 +182,6 @@ for(i in 2:200){
   
 }
 ##Plotting Results----
-<<<<<<< HEAD
-=======
-#ALL
-Output<-data.frame(DateTime=DateTime[2:length(Psi_S_stem_p)],
-                   E=E[2:length(Psi_S_stem_p)],F_crown=F_crown[2:length(Psi_S_stem_p)],F_stem=F_stem[2:length(Psi_S_stem_p)],F_soil=F_soil[2:length(Psi_S_stem_p)],
-                   f_crown=f_crown[2:length(Psi_S_stem_p)],f_stem=f_stem[2:length(Psi_S_stem_p)],f_root=f_root[2:length(Psi_S_stem_p)],f_rootTg=f_rootTg[2:length(Psi_S_stem_p)],
-                   Psi_air=Psi_air[2:length(Psi_S_stem_p)],Psi_X_crown=Psi_X_crown[2:length(Psi_S_stem_p)],Psi_X_stem=Psi_X_stem[2:length(Psi_S_stem_p)],Psi_X_root=Psi_X_root[2:length(Psi_S_stem_p)],Psi_X_rootTg=Psi_X_rootTg[2:length(Psi_S_stem_p)],
-                   Psi_S_crown=Psi_S_crown[2:length(Psi_S_stem_p)],Psi_S_stem=Psi_S_stem[2:length(Psi_S_stem_p)],Psi_S_root=Psi_S_root[2:length(Psi_S_stem_p)],Psi_S_rootTg=Psi_S_rootTg[2:length(Psi_S_stem_p)],
-                   R_X_crownair=R_X_crownair[2:length(Psi_S_stem_p)],R_X_stemcrown=R_X_stemcrown[2:length(Psi_S_stem_p)],R_X_rootstem=R_X_rootstem[2:length(Psi_S_stem_p)],R_X_soilrootTu=R_X_soilrootTu[2:length(Psi_S_stem_p)],R_X_ShallowRootDeepRoot=R_X_ShallowRootDeepRoot[2:length(Psi_S_stem_p)],
-                   R_S_stem=R_S_stem[2:length(Psi_S_stem_p)],R_S_roots=R_S_roots[2:length(Psi_S_stem_p)],R_S_roots_sat=R_S_roots_sat[2:length(Psi_S_stem_p)],
-                   D_outer=D_outer[2:length(Psi_S_stem_p)],D_inner=D_inner[2:length(Psi_S_stem_p)],V_stem=V_stem[2:length(Psi_S_stem_p)])
-
-Output<-melt(na.omit(Output),id="DateTime")
-Output$DateTime<-strptime(Output$DateTime,format="%m/%d/%y %H:%M")
->>>>>>> b8bd689844bd8aae01df693c5a62b8def7fb42ac
 
 
 #Xylem Flow
@@ -240,7 +217,6 @@ ggplot(StorageFlow, aes(x=DateTime, y=value,colour=variable,group=variable)) +
   scale_x_datetime(breaks = date_breaks("1 day"),
                    minor_breaks = date_breaks("1 hour"))+ 
   xlab("Date time")+
-<<<<<<< HEAD
   ylab(expression(paste(cm^3," ",h^-1)))
 
 
@@ -306,6 +282,3 @@ ggplot(Output, aes(x=DateTime, y=value,colour=variable)) +
   scale_x_datetime(breaks = date_breaks("1 day"),
                    minor_breaks = date_breaks("1 hour"))+ 
   xlab("Date time")
-=======
-  ylab(expression(paste(cm^3," ",h^-1)))
->>>>>>> b8bd689844bd8aae01df693c5a62b8def7fb42ac

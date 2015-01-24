@@ -10,15 +10,29 @@ i=1
 F_stem[i]=F_stem_ini
 
 
+# W_stem=(Psi_X_stem_initial[i]-F_stem_ini[i]*R_X_rootstem[i])*C_stem[i]+W_stem_max[i]   #g  Water content stored in the stem storage compartment
+
 W_stem=(Psi_X_stem_initial[i]*C_stem[i])+W_stem_max[i]   #g  Water content stored in the stem storage compartment
 
-W_rootTu=((Psi_X_stem_initial[i]-F_stem_ini[i])
-          *R_X_rootstem[i]* C_root[i])+W_root_maxTu[i]  #g Water content stored in the root storage compartment
 
-W_rootTg=((Psi_X_stem_initial[i]
-           -(F_stem_ini[i]-F_soil_ini[i]
-             *R_X_ShallowRootDeepRoot[i]))
-          *C_rootTg[i])+W_root_maxTg[i]  #g Water content stored in the root storage compartment
+# W_rootTu=(Psi_X_stem_initial[i]-F_stem_ini[i]
+#           *R_X_soilrootTu[i])*C_root[i]+W_root_maxTu[i]  #g Water content stored in the root storage compartment
+
+W_rootTu=((Psi_X_stem_initial[i]-F_stem_ini[i])
+         *R_X_rootstem[i]* C_root[i])+W_root_maxTu[i]  #g Water content stored in the root storage compartment
+
+
+W_rootTg=(Psi_X_stem_initial[i]-
+           (F_stem_ini[i]-F_soil_ini[i])
+             *R_X_ShallowRootDeepRoot[i])*C_rootTg[i]+W_root_maxTg[i]  #g Water content stored in the root storage compartment
+
+
+# W_rootTg=((Psi_X_stem_initial[i]
+#            -(F_stem_ini[i]-F_soil_ini[i]
+#              *R_X_ShallowRootDeepRoot[i]))
+#           *C_rootTg[i])+W_root_maxTg[i]  #g Water content stored in the root storage compartment
+
+
 
 W_crown=p_crown[i]*W_stem[i]
 
@@ -95,13 +109,15 @@ F_stem[i]=F_crown[i]-f_stem[i]
 # Run Loops ----
 for(i in 2:200){
   if(is.na(Psi_S_stem_p[i-1])){browser()}
+#   W_stem[i]=W_stem[i-1]+f_stem[i-1]
   W_stem[i]=(Psi_X_stem[i-1]* C_stem[i])+ W_stem_max[i]  
   #g  Water content stored in the stem storage compartment
   
+# W_rootTu[i]=W_rootTu[i-1]-f_root[i-1]
   W_rootTu[i]=((Psi_X_stem[i-1]-(F_stem[i-1]
                                  *R_X_rootstem[i]))* C_root[i]) + W_root_maxTu[i] 
-  #g Water content stored in the root storage compartment
-  
+#   #g Water content stored in the root storage compartment
+# W_rootTg[i]=W_rootTg[i-1]-f_rootTg[i-1]
   W_rootTg[i]=((Psi_X_stem[i-1]-(F_stem[i-1]-F_soil[i-1]
                                  *R_X_ShallowRootDeepRoot[i]))*C_rootTg[i]) + W_root_maxTg[i] 
   #g Water content stored in the deep root storage compartment
@@ -222,7 +238,7 @@ ggplot(StorageFlow, aes(x=DateTime, y=value,colour=variable,group=variable)) +
 
 #ALL Flows
 AllFlows<-data.frame(DateTime=DateTime[2:length(Psi_S_stem_p)],Transpiration=E[2:length(Psi_S_stem_p)],
-                   E=E[2:length(Psi_S_stem_p)],F_crown=F_crown[2:length(Psi_S_stem_p)],F_stem=F_stem[2:length(Psi_S_stem_p)],F_soil=F_soil[2:length(Psi_S_stem_p)],
+                   E=E[2:length(Psi_S_stem_p)],F_crown=F_crown[2:length(Psi_S_stem_p)],F_stem=F_stem[2:length(Psi_S_stem_p)],F_soil=F_soil[2:length(Psi_S_stem_p)],F_soilTg=F_soilTg[2:length(Psi_S_stem_p)],
                    f_crown=f_crown[2:length(Psi_S_stem_p)],f_stem=f_stem[2:length(Psi_S_stem_p)],f_root=f_root[2:length(Psi_S_stem_p)],f_rootTg=f_rootTg[2:length(Psi_S_stem_p)],
                    SapFlow=SapFlow[2:length(Psi_S_stem_p)])
 

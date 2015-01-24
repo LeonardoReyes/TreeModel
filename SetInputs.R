@@ -104,8 +104,8 @@ if(Opt==1){
 }else{
 #   R_X_crownair<-(NormVPD*9)-1   #Mpas/g    xylem resistance between crown and air
   
-  Change<-1
-  R_X_crownair<-(VPD*-1)+5  #Mpas/g    xylem resistance between crown and air
+  Change<-50
+  R_X_crownair<-(log(VPD)*-1)+5 #Mpas/g    xylem resistance between crown and air
   
   # Previous good value R_X_crownair<-FourierForResistance(limitend,200)'*NormVPD
   
@@ -114,7 +114,8 @@ if(Opt==1){
   #R_X_crownair<-NormResistance(Pars(1)-5,Pars(1),NormVPD,range)   #Mpas/g    xylem resistance between crown and air
 
   #R_X_crownair<-FourierForResistance(limitend,Pars)'*NormVPD   #Mpas/g    xylem resistance between crown and air
-  R_X_stemcrown<-rep(1,Sz)*0.5673/Change*2  #Mpas/g    xylem resistance between stem and crown
+#   R_X_stemcrown<-rep(1,Sz)*0.5673/Change*2  #Mpas/g    xylem resistance between stem and crown
+  R_X_stemcrown<-(log(VPD)*-1)+0.5673/Change*2
   #R_X_stemcrown<-NormResistance(Pars(2)-1,Pars(2),NormVPD,range)
   R_X_rootstem<-rep(1,Sz)*0.1618/Change*4   #Mpas/g    xylem resistance between root and stem
   #R_X_rootstem<-rep(1,Sz)*Pars(4)*0.095   #Mpas/g    xylem resistance between root and stem
@@ -174,11 +175,8 @@ C_crown<-rep(1,Sz)*C3/Change2         #g/Mpa      crown capacitance
 C_rootTg<-rep(1,Sz)*C2*0.25/Change2   #g/Mpa      Deep root capacitance Initial guess
 # C_rootTg<-rep(1,Sz)*C2*001          #g/Mpa      Deep root capacitance Initial guess
 
-<<<<<<< HEAD
+
 p_root<-rep(1,Sz)*0.005             #frac     percernage of stem water in roots Initial guess 0.1
-=======
-p_root<-rep(1,Sz)*0.007             #frac     percernage of stem water in roots Initial guess 0.1
->>>>>>> b8bd689844bd8aae01df693c5a62b8def7fb42ac
 p_crown<-rep(1,Sz)*0.04             #frac     percernage of stem water in crown Initial guess 0.4
 p_deeproot<-rep(1,Sz)*0.005        #frac     percernage of stem water in deep roots Initial guess 0.05
 
